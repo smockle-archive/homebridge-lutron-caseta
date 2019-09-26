@@ -1,13 +1,14 @@
 # Homebridge Lutron Caséta
 
 [![npm](https://img.shields.io/npm/v/homebridge-lutron-caseta-smockle.svg)](https://www.npmjs.com/package/homebridge-lutron-caseta-smockle)
-[![Build Status](https://travis-ci.com/smockle/homebridge-lutron-caseta.svg?branch=master)](https://travis-ci.com/smockle/homebridge-lutron-caseta)
+[![Publish Workflow](https://github.com/smockle/homebridge-lutron-caseta/workflows/Publish/badge.svg)](https://github.com/smockle/homebridge-lutron-caseta/actions)
 [![codecov](https://codecov.io/gh/smockle/homebridge-lutron-caseta/branch/master/graph/badge.svg)](https://codecov.io/gh/smockle/homebridge-lutron-caseta)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=smockle/homebridge-lutron-caseta)](https://dependabot.com)
 
 This is a fork of [jcoleman/homebridge-lutron-caseta](https://github.com/jcoleman/homebridge-lutron-caseta), a Homebridge plugin for integration with the Lutron Caséta Smart Bridge Pro.
 
 # Update 2019-06-14
+
 **I don’t use Lutron Caséta switches or remotes anymore, and I’m unlikely to undertake any new development on this plugin in the near future.** For now, new patch versions will continue to be published automatically when this plugin’s depedencies are updated. Please open an issue if you are interested in maintaining this plugin.
 
 # Motivation

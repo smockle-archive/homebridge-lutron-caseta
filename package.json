@@ -4,8 +4,7 @@
   "description": "Homebridge plugin for integration with the Lutron Caséta Smart Bridge Pro",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest",
-    "_version": "bash scripts/version.sh"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -29,7 +28,6 @@
   },
   "homepage": "https://github.com/smockle/homebridge-lutron-caseta#readme",
   "devDependencies": {
-    "codecov": "^3.1.0",
     "jest": "^24.8"
   },
   "engines": {

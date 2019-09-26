@@ -2,6 +2,4 @@ __tests__
 .github
 coverage
 node_modules
-scripts
 src
-.travis.yml
