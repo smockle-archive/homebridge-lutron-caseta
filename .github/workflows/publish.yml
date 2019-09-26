@@ -9,18 +9,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get sources
+        if: contains(github.event.commits[0].message, '[skip ci]') == false
         uses: actions/checkout@v1
         with:
           fetch-depth: 1
 
       - name: Install dependencies
+        if: contains(github.event.commits[0].message, '[skip ci]') == false
         run: npm ci
 
       - name: Test
+        if: contains(github.event.commits[0].message, '[skip ci]') == false
         run: npm test
 
       - name: Report coverage
-        if: matrix.os == 'ubuntu-latest'
+        if: contains(github.event.commits[0].message, '[skip ci]') == false
         uses: codecov/codecov-action@master
         with:
           token: ${{secrets.CODECOV_TOKEN}}
