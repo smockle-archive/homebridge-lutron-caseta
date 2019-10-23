@@ -30,7 +30,7 @@ jobs:
 
       - name: Bump version
         if: contains(github.event.commits[0].message, '[skip ci]') == false
-        uses: "smockle/version-action@master"
+        uses: "smockle/action-version@master"
         env:
           GITHUB_USER_EMAIL: bot@smockle.com
           GITHUB_USER_NAME: smockle-bot
