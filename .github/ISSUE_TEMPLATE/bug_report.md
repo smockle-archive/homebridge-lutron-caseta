@@ -13,4 +13,4 @@ Describe the bug. Please include log output and steps to reproduce.
 `node --version`
 
 **Plugin version:**
-`npm ls -g --depth=0 | grep homebridge-lutron-caseta-smockle`
+`yarn list -g --depth=0 | grep homebridge-lutron-caseta-smockle`
