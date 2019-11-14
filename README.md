@@ -22,7 +22,7 @@ However, the Smart Bridge Pro (L-BDGPRO2-WH) allows connections over telnet via 
 Review the [Installation](https://github.com/nfarina/homebridge#installation) section of the Homebridge README.
 
 ```Bash
-npm install -g homebridge-lutron-caseta-smockle
+yarn global add homebridge-lutron-caseta-smockle
 ```
 
 This project was originally published to the npm registry as [`@smockle/homebridge-lutron-caseta`](https://www.npmjs.com/package/@smockle/homebridge-lutron-caseta), but that package is now deprecated. Homebridge only supports plugins with names that start with `homebridge-`, i.e. [scoped packages are not supported](https://github.com/nfarina/homebridge/pull/2023).
