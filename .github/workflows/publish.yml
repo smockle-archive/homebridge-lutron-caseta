@@ -21,19 +21,26 @@ jobs:
           node-version: "12.x"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Locate yarn cache
+      - name: Get yarn cache
         if: contains(github.event.commits[0].message, '[skip ci]') == false
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Restore yarn cache
-        if: contains(github.event.commits[0].message, '[skip ci]') == false
+      - if: contains(github.event.commits[0].message, '[skip ci]') == false
         uses: actions/cache@v1
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
+      - if: contains(github.event.commits[0].message, '[skip ci]') == false
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
 
       - name: Install dependencies
         if: contains(github.event.commits[0].message, '[skip ci]') == false
