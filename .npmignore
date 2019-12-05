@@ -2,4 +2,3 @@ __tests__
 .github
 coverage
 node_modules
-src
