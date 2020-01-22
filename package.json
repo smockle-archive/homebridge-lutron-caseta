@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/smockle/homebridge-lutron-caseta#readme",
   "devDependencies": {
-    "jest": "^24.8"
+    "jest": "^25.1"
   },
   "engines": {
     "homebridge": ">=0.4.44",
