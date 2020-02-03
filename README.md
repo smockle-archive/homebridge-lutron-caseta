@@ -80,7 +80,7 @@ This project was originally published to the npm registry as [`@smockle/homebrid
 - `"platform"` must be `"LutronCasetaPlatform"`
 - `"host"` should match the static IP address of your bridge
 - `"name"` values must be unique
-- `"type"` should be one of `"PJ2-3BRL"`, `"PJ2-2B"` (which are [Pico model numbers](http://www.lutron.com/en-US/Products/Pages/SingleRoomControls/CasetaWireless/ModelNumbers.aspx#SectionHead3)) or `"PICO-REMOTE"` (which is compatible with [jcoleman/homebridge-lutron-caseta](https://github.com/jcoleman/homebridge-lutron-caseta))
+- `"type"` should be one of `"PJ2-3BRL"`, `"PJ2-2B"`, `"PJ2-4B"` (which are [Pico model numbers](http://www.lutron.com/en-US/Products/Pages/SingleRoomControls/CasetaWireless/ModelNumbers.aspx#SectionHead3)) or `"PICO-REMOTE"` (which is compatible with [jcoleman/homebridge-lutron-caseta](https://github.com/jcoleman/homebridge-lutron-caseta))
 - `"integrationID"` should match `"ID"` values from the “Integration Report” (emailed in Setup, step 3 above)
 
 # Debugging
