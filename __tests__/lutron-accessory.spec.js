@@ -1,5 +1,5 @@
 // @ts-check
-const { API } = require("homebridge");
+const { HomebridgeAPI } = require("homebridge/lib/api");
 const { FakeServer } = require("./fake-server");
 const { LutronCasetaPlatform } = require("../src/lutron-caseta-platform");
 const { ButtonState } = require("../src/lutron-accessory");
@@ -11,24 +11,24 @@ describe("LutronCasetaPlatform", () => {
       {
         type: "PICO-REMOTE",
         integrationID: 2,
-        name: "test remote"
-      }
-    ]
+        name: "test remote",
+      },
+    ],
   };
 
   beforeEach(() => {
     const debug = false;
 
-    homebridge = new API();
+    homebridge = new HomebridgeAPI();
     server = new FakeServer({ debug: debug });
 
-    server.listeningPromise.then(address => {
+    server.listeningPromise.then((address) => {
       const platformConfig = Object.assign({}, baseConfig, {
         bridgeConnection: {
           host: address.address,
           port: address.port,
-          debug: debug
-        }
+          debug: debug,
+        },
       });
       platform = new LutronCasetaPlatform(
         console.log,
@@ -38,17 +38,17 @@ describe("LutronCasetaPlatform", () => {
       homebridge.emit("didFinishLaunching");
     });
 
-    return server.connectionReceivedPromise.then(connection => {
+    return server.connectionReceivedPromise.then((connection) => {
       serverSocket = connection.socket;
 
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         platform.bridgeConnection.on("loggedIn", resolve);
       });
     });
   });
 
   afterEach(() => {
-    const closePromise = new Promise(resolve => {
+    const closePromise = new Promise((resolve) => {
       server.netServer.once("close", resolve);
     });
     platform.bridgeConnection.socket.destroy();
@@ -72,7 +72,7 @@ describe("LutronCasetaPlatform", () => {
 
     serverSocket.write(`~DEVICE,2,4,${ButtonState.BUTTON_DOWN}`);
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       platform.bridgeConnection.on("monitorMessageReceived", () => {
         expect(characteristic.setValue.mock.calls).toEqual([]);
         resolve();
@@ -96,7 +96,7 @@ describe("LutronCasetaPlatform", () => {
 
     serverSocket.write(`~DEVICE,2,4,${ButtonState.BUTTON_UP}`);
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       platform.bridgeConnection.on("monitorMessageReceived", () => {
         expect(characteristic.setValue.mock.calls).toEqual([[0]]);
         resolve();
