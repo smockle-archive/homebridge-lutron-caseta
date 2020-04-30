@@ -1,0 +1,48 @@
+{
+   "pluginAlias": "LutronCasetaPlatform",
+   "pluginType": "platform",
+   "singular": true,
+   "schema": {
+      "type": "object",
+      "properties": {
+         "bridgeConnection": {
+            "type": "object",
+            "properties": {
+               "host": {
+                  "type": "string",
+                  "required": true,
+                  "format": "hostname"
+               }
+            }
+         },
+         "accessories": {
+            "type": "array",
+            "items": {
+               "title": "Pico Remote Config",
+               "type": "object",
+               "properties": {
+                  "name": {
+                     "type": "string",
+                     "required": true
+                  },
+                  "type": {
+                     "type": "string",
+                     "oneOf": [
+                        { "title":"PJ2-2B", "enum":["PJ2-2B"] },
+                        { "title":"PJ2-3B", "enum":["PJ2-3B"] },
+                        { "title":"PJ2-3BRL", "enum":["PJ2-3BRL"] },
+                        { "title":"PJ2-4B", "enum":["PJ2-4B"] },
+                        { "title":"PICO-REMOTE", "enum":["PICO-REMOTE"] }
+                     ],
+                     "required": true
+                  },
+                  "integrationID": {
+                     "type": "integer",
+                     "required": true
+                  }
+               }
+            }
+         }
+      }
+   }
+}

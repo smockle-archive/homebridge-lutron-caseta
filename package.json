@@ -3,7 +3,8 @@
   "description": "Homebridge plugin for integration with the Lutron Caséta Smart Bridge Pro",
   "version": "3.0.4",
   "files": [
-    "dist"
+    "dist",
+    "config.schema.json"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
