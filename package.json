@@ -5,7 +5,6 @@
   "files": [
     "dist"
   ],
-  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -35,7 +34,7 @@
   "homepage": "https://github.com/smockle/homebridge-lutron-caseta#readme",
   "engines": {
     "homebridge": "^1.0.0",
-    "node": ">=12.0.0"
+    "node": ">=10.0.0"
   },
   "dependencies": {
     "homebridge": "^1.0.0"
