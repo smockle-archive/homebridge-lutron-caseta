@@ -1,1 +1,5 @@
-* @smockle
+*             @smockle
+
+# Dependabot
+package.json  @smockle-bot
+yarn.lock     @smockle-bot
