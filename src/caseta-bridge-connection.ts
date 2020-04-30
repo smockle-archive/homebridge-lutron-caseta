@@ -1,49 +1,60 @@
-// @ts-check
-const net = require("net");
-const { EventEmitter } = require("events");
+import { EventEmitter } from "events";
+import net from "net";
 
-const ConnectionState = {
-  AWAITING_LOGIN: 1,
-  LOGGED_IN: 2
-};
+import { Logging } from "homebridge";
 
-const ConnectionEvent = {
+export enum ConnectionState {
+  AWAITING_LOGIN = 1,
+  LOGGED_IN = 2,
+}
+
+export const ConnectionEvent = {
   LoggedIn: "loggedIn",
-  MonitorMessageReceived: "monitorMessageReceived"
+  MonitorMessageReceived: "monitorMessageReceived",
 };
 
-class CasetaBridgeConnection extends EventEmitter {
-  constructor(log, options) {
+export type BridgeConnectionOptions = {
+  host: string;
+  port: string | number;
+  username: string;
+  password: string;
+  debug: boolean;
+};
+
+export class CasetaBridgeConnection extends EventEmitter {
+  log: Logging;
+  options: BridgeConnectionOptions;
+  state: ConnectionState;
+  socket: net.Socket;
+
+  constructor(log: Logging, options?: Partial<BridgeConnectionOptions>) {
     super();
     this.log = log;
     this.options = {
       ...{
-        host: null,
+        host: "",
         port: 23,
         username: "lutron",
         password: "integration",
-        debug: false
+        debug: false,
       },
-      ...options
+      ...options,
     };
     this.state = ConnectionState.AWAITING_LOGIN;
-    this.socket = net.connect(
-      this.options.port,
-      this.options.host
-    );
-    this.socket.on("data", data => {
+    this.socket = net.connect(Number(this.options.port), this.options.host);
+    this.socket.on("data", (data) => {
       this.receiveData(data);
     });
-    this.socket.on("error", error => {
+    this.socket.on("error", (error) => {
       log(`CasetaBridgeConnection error: ${error.message}`);
     });
   }
 
-  receiveData(data) {
+  receiveData(data: Buffer) {
     const lines = data
       .toString()
       .split("\r\n")
-      .filter(l => l != "");
+      .filter((l) => l != "");
     for (let line of lines) {
       if (this.options.debug) {
         console.log("Bridge connection processing line", line);
@@ -73,9 +84,3 @@ class CasetaBridgeConnection extends EventEmitter {
     }
   }
 }
-
-module.exports = {
-  ConnectionState,
-  ConnectionEvent,
-  CasetaBridgeConnection
-};

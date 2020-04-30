@@ -1,11 +1,18 @@
-// @ts-check
-const { HomebridgeAPI } = require("homebridge/lib/api");
-const { FakeServer } = require("./fake-server");
-const { LutronCasetaPlatform } = require("../src/lutron-caseta-platform");
-const { ButtonState } = require("../src/lutron-accessory");
+import net from "net";
+
+import { Logging, PlatformConfig } from "homebridge";
+import { HomebridgeAPI } from "homebridge/lib/api";
+
+import { ButtonState } from "../lutron-accessory";
+import { LutronCasetaPlatform } from "../lutron-caseta-platform";
+import { FakeServer, FakeServerConnection } from "./fake-server";
 
 describe("LutronCasetaPlatform", () => {
-  let homebridge, platform, server, serverSocket;
+  let homebridge: HomebridgeAPI;
+  let platform: LutronCasetaPlatform;
+  let server: FakeServer;
+  let serverSocket: net.Socket;
+
   const baseConfig = {
     accessories: [
       {
@@ -20,26 +27,35 @@ describe("LutronCasetaPlatform", () => {
     const debug = false;
 
     homebridge = new HomebridgeAPI();
-    server = new FakeServer({ debug: debug });
+    server = new FakeServer({ debug });
 
     server.listeningPromise.then((address) => {
-      const platformConfig = Object.assign({}, baseConfig, {
-        bridgeConnection: {
-          host: address.address,
-          port: address.port,
-          debug: debug,
-        },
-      });
+      const platformConfig: Partial<PlatformConfig> = Object.assign(
+        {},
+        baseConfig,
+        {
+          bridgeConnection: {
+            host:
+              address && typeof address !== "string"
+                ? address.address
+                : undefined,
+            port:
+              address && typeof address !== "string" ? address.port : undefined,
+            debug: debug,
+          },
+        }
+      );
       platform = new LutronCasetaPlatform(
-        console.log,
-        platformConfig,
+        (console.log as unknown) as Logging,
+        platformConfig as PlatformConfig,
         homebridge
       );
       homebridge.emit("didFinishLaunching");
     });
 
     return server.connectionReceivedPromise.then((connection) => {
-      serverSocket = connection.socket;
+      const serverConnection = connection as FakeServerConnection;
+      serverSocket = serverConnection.socket;
 
       return new Promise((resolve) => {
         platform.bridgeConnection.on("loggedIn", resolve);
@@ -49,10 +65,10 @@ describe("LutronCasetaPlatform", () => {
 
   afterEach(() => {
     const closePromise = new Promise((resolve) => {
-      server.netServer.once("close", resolve);
+      server.netServer!.once("close", resolve);
     });
     platform.bridgeConnection.socket.destroy();
-    server.netServer.close();
+    server.netServer!.close();
     return closePromise;
   });
 
@@ -64,7 +80,7 @@ describe("LutronCasetaPlatform", () => {
       homebridge.hap.Service.StatelessProgrammableSwitch,
       "4"
     );
-    const characteristic = service.getCharacteristic(
+    const characteristic = service!.getCharacteristic(
       homebridge.hap.Characteristic.ProgrammableSwitchEvent
     );
 
@@ -74,7 +90,7 @@ describe("LutronCasetaPlatform", () => {
 
     return new Promise((resolve) => {
       platform.bridgeConnection.on("monitorMessageReceived", () => {
-        expect(characteristic.setValue.mock.calls).toEqual([]);
+        expect((characteristic.setValue as jest.Mock).mock.calls).toEqual([]);
         resolve();
       });
     });
@@ -88,7 +104,7 @@ describe("LutronCasetaPlatform", () => {
       homebridge.hap.Service.StatelessProgrammableSwitch,
       "4"
     );
-    const characteristic = service.getCharacteristic(
+    const characteristic = service!.getCharacteristic(
       homebridge.hap.Characteristic.ProgrammableSwitchEvent
     );
 
@@ -98,7 +114,9 @@ describe("LutronCasetaPlatform", () => {
 
     return new Promise((resolve) => {
       platform.bridgeConnection.on("monitorMessageReceived", () => {
-        expect(characteristic.setValue.mock.calls).toEqual([[0]]);
+        expect((characteristic.setValue as jest.Mock).mock.calls).toEqual([
+          [0],
+        ]);
         resolve();
       });
     });
