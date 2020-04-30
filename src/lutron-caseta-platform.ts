@@ -1,17 +1,29 @@
-// @ts-check
-const {
-  ConnectionEvent,
-  CasetaBridgeConnection
-} = require("./caseta-bridge-connection");
-const { LutronAccessory } = require("./lutron-accessory");
-const { PluginName, PlatformName } = require("./common");
+import {
+  API,
+  AccessoryConfig,
+  DynamicPlatformPlugin,
+  Logging,
+  PlatformAccessory,
+  PlatformConfig,
+} from "homebridge";
 
-class LutronCasetaPlatform {
-  constructor(log, config, api) {
-    if (!config) {
-      log("No config found; exiting.");
-      return;
-    }
+import {
+  CasetaBridgeConnection,
+  ConnectionEvent,
+} from "./caseta-bridge-connection";
+import { PlatformName, PluginName } from "./common";
+import { LutronAccessory, LutronPicoRemoteAccessory } from "./lutron-accessory";
+
+export class LutronCasetaPlatform implements DynamicPlatformPlugin {
+  log: Logging;
+  config: PlatformConfig;
+  homebridgeAPI: API;
+  bridgeConnection: CasetaBridgeConnection;
+  accessoriesByIntegrationID: {
+    [key: string]: LutronPicoRemoteAccessory;
+  };
+
+  constructor(log: Logging, config: PlatformConfig, api: API) {
     this.log = log;
     this.config = config;
     this.homebridgeAPI = api;
@@ -43,24 +55,29 @@ class LutronCasetaPlatform {
   }
 
   // Homebridge uses this API to load accessories from its cache.
-  configureAccessory(platformAccessory) {
+  configureAccessory(platformAccessory: PlatformAccessory) {
     this._addAccessoryFromConfig(
       platformAccessory.context.config,
       platformAccessory
     );
   }
 
-  _trackAccessory(accessory) {
+  _trackAccessory(accessory: LutronPicoRemoteAccessory) {
     this.accessoriesByIntegrationID[accessory.integrationID] = accessory;
   }
 
-  _addAccessoryFromConfig(accessoryConfig, cachedPlatformAccessory = null) {
+  _addAccessoryFromConfig(
+    accessoryConfig: AccessoryConfig,
+    cachedPlatformAccessory: PlatformAccessory | null = null
+  ) {
     const existingAccessory = this.accessoriesByIntegrationID[
       accessoryConfig.integrationID
     ];
+
     let needToRegisterPlatformAccessory = false;
+
     if (cachedPlatformAccessory === null) {
-      if (existingAccessory) {
+      if (existingAccessory && "platformAccessory" in existingAccessory) {
         cachedPlatformAccessory = existingAccessory.platformAccessory;
       } else {
         const uuid = this.homebridgeAPI.hap.uuid.generate(accessoryConfig.name);
@@ -85,17 +102,16 @@ class LutronCasetaPlatform {
 
     if (needToRegisterPlatformAccessory) {
       this.homebridgeAPI.registerPlatformAccessories(PluginName, PlatformName, [
-        cachedPlatformAccessory
+        cachedPlatformAccessory,
       ]);
     }
   }
 
-  _dispatchMonitorMessage(integrationID, commandFields) {
+  _dispatchMonitorMessage(
+    integrationID: "string",
+    commandFields: [string, string]
+  ) {
     const accessory = this.accessoriesByIntegrationID[integrationID];
     accessory._dispatchMonitorMessage(commandFields);
   }
 }
-
-module.exports = {
-  LutronCasetaPlatform
-};

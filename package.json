@@ -1,9 +1,15 @@
 {
   "name": "homebridge-lutron-caseta-smockle",
-  "version": "2.0.33",
   "description": "Homebridge plugin for integration with the Lutron Caséta Smart Bridge Pro",
-  "main": "src/index.js",
+  "version": "3.0.0",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "jest"
   },
   "repository": {
@@ -27,18 +33,27 @@
     "url": "https://github.com/smockle/homebridge-lutron-caseta/issues"
   },
   "homepage": "https://github.com/smockle/homebridge-lutron-caseta#readme",
-  "devDependencies": {
-    "jest": "^25.1"
-  },
   "engines": {
-    "homebridge": ">=0.4.44",
-    "node": ">=10.0.0"
+    "homebridge": "^1.0.0",
+    "node": ">=12.0.0"
   },
   "dependencies": {
-    "homebridge": ">=0.4.44"
+    "homebridge": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.0",
+    "@types/node": "^13.1.0",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.0.0",
+    "typescript": "^3.7.2"
   },
   "jest": {
-    "testRegex": "__tests__\\/.+.spec\\.js$",
-    "collectCoverage": true
+    "preset": "ts-jest",
+    "collectCoverage": true,
+    "testRegex": "src\\/__tests__\\/.+.spec\\.ts$",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/dist/"
+    ]
   }
 }

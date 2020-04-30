@@ -1,26 +1,49 @@
-// @ts-check
-const ButtonState = {
-  BUTTON_DOWN: "3",
-  BUTTON_UP: "4"
-};
+import {
+  API,
+  Logging,
+  PlatformAccessory,
+  PlatformConfig,
+  Service,
+} from "homebridge";
+
+export enum ButtonState {
+  BUTTON_DOWN = "3",
+  BUTTON_UP = "4",
+}
 
 const ButtonMap = {
   "PICO-REMOTE": ["2", "4"],
   "PJ2-2B": ["2", "4"],
   "PJ2-3B": ["2", "3", "4"],
   "PJ2-3BRL": ["2", "4", "5", "6", "3"],
-  "PJ2-4B": ["8", "9", "10", "11"]
-}
+  "PJ2-4B": ["8", "9", "10", "11"],
+};
 
-class LutronAccessory {
-  static accessoryForType(type, log, platformAccessory, api) {
+export class LutronAccessory {
+  static accessoryForType(
+    type: keyof typeof ButtonMap,
+    log: Logging,
+    platformAccessory: PlatformAccessory,
+    api: API
+  ) {
     if (!Object.keys(ButtonMap).includes(type)) {
       log(`Unknown accessory type: ${type}`);
     }
-    return new LutronPicoRemoteAccessory(ButtonMap[type], log, platformAccessory, api);
+    return new LutronPicoRemoteAccessory(
+      ButtonMap[type],
+      log,
+      platformAccessory,
+      api
+    );
   }
 
-  constructor(log, platformAccessory, api) {
+  log: Logging;
+  platformAccessory: PlatformAccessory;
+  config: PlatformConfig;
+  homebridgeAPI: API;
+  integrationID: string;
+
+  constructor(log: Logging, platformAccessory: PlatformAccessory, api: API) {
     this.log = log;
     this.platformAccessory = platformAccessory;
     this.config = platformAccessory.context.config;
@@ -29,8 +52,15 @@ class LutronAccessory {
   }
 }
 
-class LutronPicoRemoteAccessory extends LutronAccessory {
-  constructor(buttons, log, platformAccessory, api) {
+export class LutronPicoRemoteAccessory extends LutronAccessory {
+  switchServicesByButtonNumber: { [key: string]: Service };
+
+  constructor(
+    buttons: string[],
+    log: Logging,
+    platformAccessory: PlatformAccessory,
+    api: API
+  ) {
     super(log, platformAccessory, api);
 
     const StatelessProgrammableSwitch = this.homebridgeAPI.hap.Service
@@ -38,7 +68,10 @@ class LutronPicoRemoteAccessory extends LutronAccessory {
     this.switchServicesByButtonNumber = buttons.reduce((acc, number) => {
       const displayName = `Switch ${number}`;
 
-      let existingService = this.platformAccessory.getServiceByUUIDAndSubType(
+      let existingService:
+        | Service
+        | null
+        | undefined = this.platformAccessory.getServiceByUUIDAndSubType(
         StatelessProgrammableSwitch,
         number
       );
@@ -61,10 +94,10 @@ class LutronPicoRemoteAccessory extends LutronAccessory {
       acc[number] = service;
 
       return acc;
-    }, {});
+    }, {} as { [key: string]: Service });
   }
 
-  _dispatchMonitorMessage(commandFields) {
+  _dispatchMonitorMessage(commandFields: [string, string]) {
     const [serviceNumber, buttonState] = commandFields;
     if (buttonState == ButtonState.BUTTON_UP) {
       const service = this.switchServicesByButtonNumber[serviceNumber];
@@ -75,8 +108,3 @@ class LutronPicoRemoteAccessory extends LutronAccessory {
     }
   }
 }
-
-module.exports = {
-  ButtonState,
-  LutronAccessory
-};

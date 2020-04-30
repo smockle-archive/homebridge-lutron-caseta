@@ -1,15 +1,19 @@
-// @ts-check
-const net = require("net");
-const { HomebridgeAPI } = require("homebridge/lib/api");
-const { PlatformAccessory } = require("homebridge/lib/platformAccessory");
-const { uuid } = require("hap-nodejs");
-const { FakeServer } = require("./fake-server");
-const { LutronCasetaPlatform } = require("../src/lutron-caseta-platform");
-const { LutronAccessory } = require("../src/lutron-accessory");
+import net from "net";
+
+import { uuid } from "hap-nodejs";
+import { Logging, PlatformConfig } from "homebridge";
+import { HomebridgeAPI } from "homebridge/lib/api";
+import { PlatformAccessory } from "homebridge/lib/platformAccessory";
+
+import { LutronAccessory } from "../lutron-accessory";
+import { LutronCasetaPlatform } from "../lutron-caseta-platform";
+import { FakeServer, FakeServerConnection } from "./fake-server";
 
 describe("LutronCasetaPlatform", () => {
-  let homebridge, platform;
-  const baseConfig = {
+  let homebridge: HomebridgeAPI;
+  let platform: LutronCasetaPlatform;
+
+  const baseConfig: Partial<PlatformConfig> = {
     bridgeConnection: {},
     accessories: [
       {
@@ -25,7 +29,7 @@ describe("LutronCasetaPlatform", () => {
   });
 
   describe("without fake server", () => {
-    let connectMock;
+    let connectMock: jest.Mock;
 
     beforeEach(() => {
       connectMock = jest.fn((port, host) => {
@@ -33,7 +37,11 @@ describe("LutronCasetaPlatform", () => {
       });
       jest.spyOn(net, "connect").mockImplementation(connectMock);
 
-      platform = new LutronCasetaPlatform(() => {}, baseConfig, homebridge);
+      platform = new LutronCasetaPlatform(
+        ((() => {}) as unknown) as Logging,
+        baseConfig as PlatformConfig,
+        homebridge
+      );
     });
 
     afterEach(() => {
@@ -98,7 +106,9 @@ describe("LutronCasetaPlatform", () => {
 
       homebridge.emit("didFinishLaunching");
 
-      expect(homebridge.registerPlatformAccessories.mock.calls).toEqual([]);
+      expect(
+        (homebridge.registerPlatformAccessories as jest.Mock).mock.calls
+      ).toEqual([]);
     });
 
     it("updates cached accessories from config", () => {
@@ -178,7 +188,9 @@ describe("LutronCasetaPlatform", () => {
   });
 
   describe("with fake server", () => {
-    let server, serverSocket;
+    let server: FakeServer;
+    let serverSocket: net.Socket;
+
     beforeEach(() => {
       const debug = false;
 
@@ -187,21 +199,26 @@ describe("LutronCasetaPlatform", () => {
       server.listeningPromise.then((address) => {
         const platformConfig = Object.assign({}, baseConfig, {
           bridgeConnection: {
-            host: address.address,
-            port: address.port,
-            debug: debug,
+            host:
+              address && typeof address !== "string"
+                ? address.address
+                : undefined,
+            port:
+              address && typeof address !== "string" ? address.port : undefined,
+            debug,
           },
         });
         platform = new LutronCasetaPlatform(
-          console.log,
-          platformConfig,
+          (console.log as unknown) as Logging,
+          platformConfig as PlatformConfig,
           homebridge
         );
       });
 
       const serverSocketSetup = server.connectionReceivedPromise.then(
         (connection) => {
-          serverSocket = connection.socket;
+          const serverConnection = connection as FakeServerConnection;
+          serverSocket = serverConnection.socket;
         }
       );
 
@@ -217,10 +234,10 @@ describe("LutronCasetaPlatform", () => {
 
     afterEach(() => {
       const closePromise = new Promise((resolve) => {
-        server.netServer.once("close", resolve);
+        server.netServer!.once("close", resolve);
       });
       platform.bridgeConnection.socket.destroy();
-      server.netServer.close();
+      server.netServer!.close();
       return closePromise;
     });
 
@@ -234,7 +251,7 @@ describe("LutronCasetaPlatform", () => {
         homebridge.hap.Service.StatelessProgrammableSwitch,
         "4"
       );
-      const characteristic = service.getCharacteristic(
+      const characteristic = service!.getCharacteristic(
         homebridge.hap.Characteristic.ProgrammableSwitchEvent
       );
 
@@ -246,9 +263,9 @@ describe("LutronCasetaPlatform", () => {
 
       return new Promise((resolve) => {
         platform.bridgeConnection.on("monitorMessageReceived", () => {
-          expect(accessory._dispatchMonitorMessage.mock.calls).toEqual([
-            [["4", "3"]],
-          ]);
+          expect(
+            (accessory._dispatchMonitorMessage as jest.Mock).mock.calls
+          ).toEqual([[["4", "3"]]]);
           resolve();
         });
       });
