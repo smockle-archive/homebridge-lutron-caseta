@@ -1,7 +1,7 @@
 name: Publish
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
 
 jobs:
   publish:
@@ -55,7 +55,7 @@ jobs:
 
       - name: Bump version
         if: contains(github.event.commits[0].message, '[skip ci]') == false
-        uses: "smockle/action-version@master"
+        uses: "smockle/action-version@main"
         env:
           GITHUB_USER_EMAIL: bot@smockle.com
           GITHUB_USER_NAME: smockle-bot

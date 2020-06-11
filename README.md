@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/homebridge-lutron-caseta-smockle.svg)](https://www.npmjs.com/package/homebridge-lutron-caseta-smockle)
 [![Publish Workflow](https://github.com/smockle/homebridge-lutron-caseta/workflows/Publish/badge.svg)](https://github.com/smockle/homebridge-lutron-caseta/actions)
-[![codecov](https://codecov.io/gh/smockle/homebridge-lutron-caseta/branch/master/graph/badge.svg)](https://codecov.io/gh/smockle/homebridge-lutron-caseta)
+[![codecov](https://codecov.io/gh/smockle/homebridge-lutron-caseta/branch/main/graph/badge.svg)](https://codecov.io/gh/smockle/homebridge-lutron-caseta)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=smockle/homebridge-lutron-caseta)](https://dependabot.com)
 
 This is a fork of [jcoleman/homebridge-lutron-caseta](https://github.com/jcoleman/homebridge-lutron-caseta), a Homebridge plugin for integration with the Lutron Caséta Smart Bridge Pro.
