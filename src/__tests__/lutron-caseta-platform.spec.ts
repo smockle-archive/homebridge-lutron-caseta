@@ -5,21 +5,25 @@ import { Logging, PlatformConfig } from "homebridge";
 import { HomebridgeAPI } from "homebridge/lib/api";
 import { PlatformAccessory } from "homebridge/lib/platformAccessory";
 
-import { LutronAccessory } from "../lutron-accessory";
-import { LutronCasetaPlatform } from "../lutron-caseta-platform";
+import { LutronAccessory, LutronAccessoryConfig } from "../lutron-accessory";
+import {
+  LutronCasetaPlatform,
+  LutronCasetaPlatformConfig,
+} from "../lutron-caseta-platform";
 import { FakeServer, FakeServerConnection } from "./fake-server";
 
 describe("LutronCasetaPlatform", () => {
   let homebridge: HomebridgeAPI;
   let platform: LutronCasetaPlatform;
 
-  const baseConfig: Partial<PlatformConfig> = {
+  const baseConfig: Partial<LutronCasetaPlatformConfig> = {
     bridgeConnection: {},
     accessories: [
       {
         type: "PICO-REMOTE",
         integrationID: 2,
         name: "test remote",
+        accessory: "test remote",
       },
     ],
   };
@@ -39,7 +43,7 @@ describe("LutronCasetaPlatform", () => {
 
       platform = new LutronCasetaPlatform(
         ((() => {}) as unknown) as Logging,
-        baseConfig as PlatformConfig,
+        baseConfig as LutronCasetaPlatformConfig,
         homebridge
       );
     });
@@ -49,14 +53,14 @@ describe("LutronCasetaPlatform", () => {
     });
 
     it("tracks an accessory from Homebridge's cache", () => {
-      const cachedPlatformAccessory = new PlatformAccessory(
-        "Display Name",
-        uuid.generate("bogus")
-      );
+      const cachedPlatformAccessory = new PlatformAccessory<{
+        config: LutronAccessoryConfig;
+      }>("Display Name", uuid.generate("bogus"));
       cachedPlatformAccessory.context.config = {
         type: "PICO-REMOTE",
         integrationID: 2,
         name: "test remote",
+        accessory: "test remote",
       };
 
       expect(platform.accessoriesByIntegrationID).toEqual({});
@@ -91,14 +95,14 @@ describe("LutronCasetaPlatform", () => {
     });
 
     it("doesn't attempt to re-add cached accessories from config", () => {
-      const cachedPlatformAccessory = new PlatformAccessory(
-        "Display Name",
-        uuid.generate("bogus")
-      );
+      const cachedPlatformAccessory = new PlatformAccessory<{
+        config: LutronAccessoryConfig;
+      }>("Display Name", uuid.generate("bogus"));
       cachedPlatformAccessory.context.config = {
         type: "PICO-REMOTE",
         integrationID: 2,
         name: "test remote",
+        accessory: "test remote",
       };
       platform.configureAccessory(cachedPlatformAccessory);
 
@@ -112,14 +116,14 @@ describe("LutronCasetaPlatform", () => {
     });
 
     it("updates cached accessories from config", () => {
-      const cachedPlatformAccessory = new PlatformAccessory(
-        "Display Name",
-        uuid.generate("bogus")
-      );
+      const cachedPlatformAccessory = new PlatformAccessory<{
+        config: LutronAccessoryConfig;
+      }>("Display Name", uuid.generate("bogus"));
       cachedPlatformAccessory.context.config = {
         type: "PICO-REMOTE",
         integrationID: 2,
         name: "bogus",
+        accessory: "bogus",
       };
       platform.configureAccessory(cachedPlatformAccessory);
 
@@ -155,14 +159,14 @@ describe("LutronCasetaPlatform", () => {
       });
 
       it("updates services on cached platform accessories", () => {
-        const cachedPlatformAccessory = new PlatformAccessory(
-          "Display Name",
-          uuid.generate("bogus")
-        );
+        const cachedPlatformAccessory = new PlatformAccessory<{
+          config: LutronAccessoryConfig;
+        }>("Display Name", uuid.generate("bogus"));
         cachedPlatformAccessory.context.config = {
           type: "PICO-REMOTE",
           integrationID: 2,
           name: "bogus",
+          accessory: "bogus",
         };
         const bogusService = new homebridge.hap.Service.StatelessProgrammableSwitch(
           "Switch bogus",
@@ -210,7 +214,7 @@ describe("LutronCasetaPlatform", () => {
         });
         platform = new LutronCasetaPlatform(
           (console.log as unknown) as Logging,
-          platformConfig as PlatformConfig,
+          platformConfig as LutronCasetaPlatformConfig,
           homebridge
         );
       });

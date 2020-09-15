@@ -1,8 +1,8 @@
 import {
   API,
+  AccessoryConfig,
   Logging,
   PlatformAccessory,
-  PlatformConfig,
   Service,
 } from "homebridge";
 
@@ -19,11 +19,17 @@ const ButtonMap = {
   "PJ2-4B": ["8", "9", "10", "11"],
 };
 
+export interface LutronAccessoryConfig extends AccessoryConfig {
+  name: string;
+  type: keyof typeof ButtonMap;
+  integrationID: string | number;
+}
+
 export class LutronAccessory {
   static accessoryForType(
     type: keyof typeof ButtonMap,
     log: Logging,
-    platformAccessory: PlatformAccessory,
+    platformAccessory: PlatformAccessory<{ config: LutronAccessoryConfig }>,
     api: API
   ) {
     if (!Object.keys(ButtonMap).includes(type)) {
@@ -38,17 +44,21 @@ export class LutronAccessory {
   }
 
   log: Logging;
-  platformAccessory: PlatformAccessory;
-  config: PlatformConfig;
+  platformAccessory: PlatformAccessory<{ config: LutronAccessoryConfig }>;
+  config: LutronAccessoryConfig;
   homebridgeAPI: API;
   integrationID: string;
 
-  constructor(log: Logging, platformAccessory: PlatformAccessory, api: API) {
+  constructor(
+    log: Logging,
+    platformAccessory: PlatformAccessory<{ config: LutronAccessoryConfig }>,
+    api: API
+  ) {
     this.log = log;
     this.platformAccessory = platformAccessory;
     this.config = platformAccessory.context.config;
     this.homebridgeAPI = api;
-    this.integrationID = this.config.integrationID;
+    this.integrationID = String(this.config.integrationID);
   }
 }
 
@@ -58,7 +68,7 @@ export class LutronPicoRemoteAccessory extends LutronAccessory {
   constructor(
     buttons: string[],
     log: Logging,
-    platformAccessory: PlatformAccessory,
+    platformAccessory: PlatformAccessory<{ config: LutronAccessoryConfig }>,
     api: API
   ) {
     super(log, platformAccessory, api);
