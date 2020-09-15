@@ -4,7 +4,10 @@ import { Logging, PlatformConfig } from "homebridge";
 import { HomebridgeAPI } from "homebridge/lib/api";
 
 import { ButtonState } from "../lutron-accessory";
-import { LutronCasetaPlatform } from "../lutron-caseta-platform";
+import {
+  LutronCasetaPlatform,
+  LutronCasetaPlatformConfig,
+} from "../lutron-caseta-platform";
 import { FakeServer, FakeServerConnection } from "./fake-server";
 
 describe("LutronCasetaPlatform", () => {
@@ -47,7 +50,7 @@ describe("LutronCasetaPlatform", () => {
       );
       platform = new LutronCasetaPlatform(
         (console.log as unknown) as Logging,
-        platformConfig as PlatformConfig,
+        platformConfig as LutronCasetaPlatformConfig,
         homebridge
       );
       homebridge.emit("didFinishLaunching");

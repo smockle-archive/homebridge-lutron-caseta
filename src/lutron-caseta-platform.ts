@@ -1,6 +1,5 @@
 import {
   API,
-  AccessoryConfig,
   DynamicPlatformPlugin,
   Logging,
   PlatformAccessory,
@@ -8,22 +7,32 @@ import {
 } from "homebridge";
 
 import {
+  BridgeConnectionOptions,
   CasetaBridgeConnection,
   ConnectionEvent,
 } from "./caseta-bridge-connection";
 import { PlatformName, PluginName } from "./common";
-import { LutronAccessory, LutronPicoRemoteAccessory } from "./lutron-accessory";
+import {
+  LutronAccessory,
+  LutronAccessoryConfig,
+  LutronPicoRemoteAccessory,
+} from "./lutron-accessory";
+
+export interface LutronCasetaPlatformConfig extends PlatformConfig {
+  bridgeConnection: Partial<BridgeConnectionOptions> | undefined;
+  accessories: LutronAccessoryConfig[];
+}
 
 export class LutronCasetaPlatform implements DynamicPlatformPlugin {
   log: Logging;
-  config: PlatformConfig;
+  config: LutronCasetaPlatformConfig;
   homebridgeAPI: API;
   bridgeConnection: CasetaBridgeConnection;
   accessoriesByIntegrationID: {
     [key: string]: LutronPicoRemoteAccessory;
   };
 
-  constructor(log: Logging, config: PlatformConfig, api: API) {
+  constructor(log: Logging, config: LutronCasetaPlatformConfig, api: API) {
     this.log = log;
     this.config = config;
     this.homebridgeAPI = api;
@@ -55,7 +64,9 @@ export class LutronCasetaPlatform implements DynamicPlatformPlugin {
   }
 
   // Homebridge uses this API to load accessories from its cache.
-  configureAccessory(platformAccessory: PlatformAccessory) {
+  configureAccessory(
+    platformAccessory: PlatformAccessory<{ config: LutronAccessoryConfig }>
+  ) {
     this._addAccessoryFromConfig(
       platformAccessory.context.config,
       platformAccessory
@@ -67,8 +78,10 @@ export class LutronCasetaPlatform implements DynamicPlatformPlugin {
   }
 
   _addAccessoryFromConfig(
-    accessoryConfig: AccessoryConfig,
-    cachedPlatformAccessory: PlatformAccessory | null = null
+    accessoryConfig: LutronAccessoryConfig,
+    cachedPlatformAccessory: PlatformAccessory<{
+      config: LutronAccessoryConfig;
+    }> | null = null
   ) {
     const existingAccessory = this.accessoriesByIntegrationID[
       accessoryConfig.integrationID
