@@ -32,9 +32,9 @@ export class LutronCasetaPlatform implements DynamicPlatformPlugin {
     [key: string]: LutronPicoRemoteAccessory;
   };
 
-  constructor(log: Logging, config: LutronCasetaPlatformConfig, api: API) {
+  constructor(log: Logging, config: PlatformConfig, api: API) {
     this.log = log;
-    this.config = config;
+    this.config = config as LutronCasetaPlatformConfig;
     this.homebridgeAPI = api;
 
     this.bridgeConnection = new CasetaBridgeConnection(
