@@ -265,10 +265,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@homebridge/ciao@~1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@homebridge/ciao/-/ciao-1.0.0.tgz#cb3a8a4317e629e6a0e3e848dff6995a0b3e135e"
-  integrity sha512-sHfVZ1hRybJeLGjOJGYmXyTbKhbYaCQjnoUd7iwcCIY1qHy6vUf4jyWZJJoHtshdVkvGwBDyCOGUXCenHdbLdw==
+"@homebridge/ciao@~1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@homebridge/ciao/-/ciao-1.0.5.tgz#a259a281df6c90b742d230a9dee2e29a7a0e2c25"
+  integrity sha512-aqggqXJ6ynEE3UuZz9X3WrP+46OsLRhwMoFuo7RHZ2MK0WOciPsw3u55rndaAHM/NtJGuDMs0oqOKN9UeeXu9g==
   dependencies:
     debug "^4.1.1"
     fast-deep-equal "^3.1.3"
@@ -1504,12 +1504,12 @@ growly@^1.3.0:
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
-hap-nodejs@~0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/hap-nodejs/-/hap-nodejs-0.8.0.tgz#9523bfe37f5c3202d804167f246ec20b510fc2b3"
-  integrity sha512-fVVtMSBZmv4seUJ/AzLvTMNyLUs4T2RyFXIJvlYOTzzOFOf1UeQ8VexuWDKYABTqirDcCtHFFUf2qbSb+rLMGw==
+hap-nodejs@~0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/hap-nodejs/-/hap-nodejs-0.8.2.tgz#4005d638537f0e155a91ced0527b6bb61fe1d84d"
+  integrity sha512-OVy+wtcC3uXl5V0Ba3f4MtOYVOUS5J3kIB69AV4zvlo02kS41d9ZYKE3rvcTce8kj8ih0YBpYVWRL4a7uHEbjw==
   dependencies:
-    "@homebridge/ciao" "~1.0.0"
+    "@homebridge/ciao" "~1.0.5"
     debug "^4.1.1"
     decimal.js "^10.2.0"
     fast-srp-hap "2.0.2"
@@ -1573,13 +1573,13 @@ has-values@^1.0.0:
     kind-of "^4.0.0"
 
 homebridge@^1.0.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/homebridge/-/homebridge-1.2.0.tgz#6fbd71d7aada2317be51fe891f19a1c9dfda850e"
-  integrity sha512-FAmzIA+dykoGV3n0P060eGmu6/WUhHLRMiASEqgUXBEIAfxSGzKoHwehkAvWtdr47lTeU62CP8LberUO94Tvww==
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/homebridge/-/homebridge-1.2.2.tgz#f8f0e1a915e3b7e65405788a665c556f22dfe440"
+  integrity sha512-wj18LegOASVBOpkZv/vfxXKDkzP9I5Sl3cGJh8zzsQgENQLz6eCQ6GJulhFVTGiUL9HuCGsuOnEGK4SGzM/G/w==
   dependencies:
     chalk "^4.1.0"
     commander "5.1.0"
-    hap-nodejs "~0.8.0"
+    hap-nodejs "~0.8.2"
     node-persist "^0.0.11"
     qrcode-terminal "^0.12.0"
     semver "^7.3.2"
